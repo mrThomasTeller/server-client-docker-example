@@ -1,0 +1,51 @@
+version: '3.8'
+
+volumes:
+  postgres-data:
+
+services:
+  db:
+    env_file:
+      - ./server/docker.env
+    image: postgres:14
+    volumes:
+      - postgres-data:/var/lib/postgresql/data:delegated
+    ports:
+      # внешний порт : внутренний порт
+      - 5432:5432
+    container_name: todos-db
+
+  app:
+    build: .
+    env_file:
+      - ./server/docker.env
+    working_dir: /root/app
+    depends_on:
+      - db
+    volumes:
+      - ./logs:/root/app/logs
+    ports:
+      - 3000:${PORT}
+    container_name: todos-app
+
+  # по умолчанию запускается раз в день
+  backup:
+    env_file:
+      - docker.env
+    image: prodrigestivill/postgres-backup-local
+    volumes:
+      - ~/pgbackups/todos:/backups # путь на хост-компьютере для хранения резервных копий
+    environment:
+      - SCHEDULE=* * * * * # каждую минуту
+    depends_on:
+      - db
+    container_name: todos-db-backup
+
+  # logs ui
+  dozzle:
+    container_name: todos-dozzle
+    image: amir20/dozzle:v5.0.5
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 9999:8080

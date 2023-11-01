@@ -1,0 +1,37 @@
+version: '3.8'
+
+volumes:
+  postgres-data:
+  client-dist:
+
+services:
+  db:
+    env_file:
+      - ./docker.env
+    image: postgres:14
+    volumes:
+      - postgres-data:/var/lib/postgresql/data:delegated
+    ports:
+      # внешний порт : внутренний порт
+      - 5432:5432
+    container_name: todos-db
+
+  server:
+    build: ./server
+    env_file:
+      - ./docker.env
+    working_dir: /root/server
+    depends_on:
+      - db
+    volumes:
+      - client-dist:/root/client/dist:delegated
+    ports:
+      - 3000:${PORT}
+    container_name: todos-server
+
+  client:
+    build: ./client
+    working_dir: /root/client
+    container_name: todos-client
+    volumes:
+      - client-dist:/root/client/dist:delegated
