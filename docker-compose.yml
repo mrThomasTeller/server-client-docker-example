@@ -7,7 +7,7 @@ volumes:
 services:
   db:
     env_file:
-      - ./docker.env
+      - ./.env.production.local
     image: postgres:14
     volumes:
       - postgres-data:/var/lib/postgresql/data:delegated
@@ -19,7 +19,7 @@ services:
   server:
     build: ./server
     env_file:
-      - ./docker.env
+      - ./.env.production.local
     working_dir: /root/server
     depends_on:
       - db
