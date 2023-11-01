@@ -1,7 +1,7 @@
 all: deploy
 
 deploy:
-	make build && make start
+	make build && make start-detached
 
 build:
 	docker compose build
