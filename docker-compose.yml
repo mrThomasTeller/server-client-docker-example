@@ -7,6 +7,7 @@ volumes:
 services:
   db:
     env_file:
+      - ./.env
       - ./.env.production.local
     image: postgres:14
     volumes:
@@ -19,6 +20,7 @@ services:
   server:
     build: ./server
     env_file:
+      - ./.env
       - ./.env.production.local
     working_dir: /root/server
     depends_on:
