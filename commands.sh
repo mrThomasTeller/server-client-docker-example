@@ -1,11 +1,8 @@
 # Установить докер
 curl -fsSL https://get.docker.com | sh
 
-# собрать контейнеры из образов
-docker compose build
+# собрать контейнеры из образов и запустить
+docker compose up --build
 
-# запустить контейнеры
-docker compose up
-
-# запустить контейнеры в фоне
-docker compose up -d
+# собрать контейнеры из образов и запустить в фоне
+docker compose up --build -d

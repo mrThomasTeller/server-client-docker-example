@@ -14,4 +14,4 @@ RUN npm install --omit=dev
 COPY . .
 
 # запускаем билд файлов фронтенда, после этого они появятся в папке /root/client/dist
-RUN npm run build
+CMD npm run build
