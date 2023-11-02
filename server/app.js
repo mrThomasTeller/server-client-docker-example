@@ -21,7 +21,7 @@ const pool = new pg.Pool({
   port: 5432,
 });
 
-// create table if not exists
+// Ждём пока база данных запустится
 while (true) {
   try {
     await pool.query(
