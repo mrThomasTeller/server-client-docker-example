@@ -21,9 +21,15 @@ const pool = new pg.Pool({
   port: 5432,
 });
 
-await pool.query(
-  'CREATE TABLE IF NOT EXISTS todos (id SERIAL PRIMARY KEY, description TEXT NOT NULL)'
-);
+// Ждём пока база данных запустится
+while (true) {
+  try {
+    await pool.query(
+      'CREATE TABLE IF NOT EXISTS todos (id SERIAL PRIMARY KEY, description TEXT NOT NULL)'
+    );
+    break;
+  } catch (error) {}
+}
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -46,5 +52,5 @@ app.post('/api/todos', async (req, res) => {
 
 // Start server
 app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
+  console.log(`Server listening on port ${port} 🤗`);
 });

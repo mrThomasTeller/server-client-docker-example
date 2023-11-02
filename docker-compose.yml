@@ -1,0 +1,52 @@
+version: '3.8'
+
+# Volume - это папка с файлами, которая лежит за пределами контейнеров.
+volumes:
+  postgres-data:
+  client-dist:
+
+services:
+  db:
+    # собираем сервис из образа Postgres
+    image: postgres:14
+    # пробрасываем данные для подключения к БД в контейнер
+    env_file:
+      - ./.env
+    environment:
+      - POSTGRES_HOST=db
+    volumes:
+      # сохраняем данные постгреса вне контейнера, чтобы они не потерялись при пересборке
+      - postgres-data:/var/lib/postgresql/data:delegated
+    ports:
+      # внешний порт : внутренний порт
+      - 5432:5432
+    container_name: todos-db
+
+  server:
+    build: ./server
+    env_file:
+      - ./.env
+    environment:
+      - POSTGRES_HOST=db
+    working_dir: /root/server
+    depends_on:
+      # сервер не будет запущен пока не будет запущена БД
+      - db
+    volumes:
+      # сервер будет брать файлы фронтенда из volume client-dist
+      - client-dist:/root/client/dist:delegated
+    ports:
+      # порт 3000 контейнера будет проксироваться на порт 3000 хоста
+      # внешний - порт хоста : внутренний - порт контейнера
+      - 3000:${PORT}
+    container_name: todos-server
+
+  client:
+    # папка, в которой лежит Dockerfile
+    build: ./client
+    # здесь будут лежать файлы клиента внутри контейнера
+    working_dir: /root/client
+    container_name: todos-client
+    volumes:
+      # файлы фронтенда будут собираться в volume client-dist
+      - client-dist:/root/client/dist:delegated
