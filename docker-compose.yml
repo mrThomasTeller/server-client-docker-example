@@ -37,3 +37,25 @@ services:
     container_name: todos-client
     volumes:
       - client-dist:/root/client/dist:delegated
+
+  # по умолчанию запускается раз в день
+  backup:
+    env_file:
+      - docker.env
+    image: prodrigestivill/postgres-backup-local
+    volumes:
+      - ~/pgbackups/todos:/backups # путь на хост-компьютере для хранения резервных копий
+    environment:
+      - SCHEDULE=* * * * * # каждую минуту
+    depends_on:
+      - db
+    container_name: todos-db-backup
+
+  # logs ui
+  dozzle:
+    container_name: todos-dozzle
+    image: amir20/dozzle:v5.0.5
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 9999:8080
