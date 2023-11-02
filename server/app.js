@@ -21,15 +21,9 @@ const pool = new pg.Pool({
   port: 5432,
 });
 
-// create table if not exists
-while (true) {
-  try {
-    await pool.query(
-      'CREATE TABLE IF NOT EXISTS todos (id SERIAL PRIMARY KEY, description TEXT NOT NULL)'
-    );
-    break;
-  } catch (error) {}
-}
+await pool.query(
+  'CREATE TABLE IF NOT EXISTS todos (id SERIAL PRIMARY KEY, description TEXT NOT NULL)'
+);
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
