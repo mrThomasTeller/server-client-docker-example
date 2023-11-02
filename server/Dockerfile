@@ -1,5 +1,5 @@
 # Образ из которого будем собирать контейнер
-FROM node:18-slim
+FROM node:20-slim
 
 # рабочая папка проекта
 WORKDIR /root/server

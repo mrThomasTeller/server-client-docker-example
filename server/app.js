@@ -52,5 +52,5 @@ app.post('/api/todos', async (req, res) => {
 
 // Start server
 app.listen(port, () => {
-  console.log(`Server listening on port ${port} 🤗🤗🤗`);
+  console.log(`Server listening on port ${port} 🔥`);
 });
